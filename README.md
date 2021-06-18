@@ -4,6 +4,8 @@
 
 Portable fNIRS neuroimaging pipelines that work with BIDS datasets. See http://fnirs-apps.org
 
+**Feedback is welcome!!** Please let me know your experience by raising an issue above. I will help you get this working with your data.
+
 This app will convert a directory of source files to a BIDS dataset.
 The source data must be formatted using BIDS directory structure in the `/sourcedata` directory,
 see [here for an example of how to format the source data](https://github.com/rob-luke/BIDS-NIRS-Tapping/tree/00-Raw-data).
@@ -12,8 +14,9 @@ The app will then convert the data to BIDS format such that the resulting direct
 
 #### Current limitations
 
-1. Currently only works with NIRx files. However, MNE supports Hitachi, Imagent, Artinis datatypes too. So it will be trivial to extend to these files types.
-2. Currently does not rename trigger numbers to something more meaningful.
+
+* Currently does not rename trigger numbers to something more meaningful. See [#1](https://github.com/rob-luke/fnirs-apps-sourcedata2bids/issues/1)
+* Currently only works with NIRx files. However, MNE supports Hitachi, Imagent, Artinis datatypes too. So it will be trivial to extend to these files types.  See [#2](https://github.com/rob-luke/fnirs-apps-sourcedata2bids/issues/2)
 
 
 ## Usage
