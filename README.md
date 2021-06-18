@@ -7,7 +7,6 @@ Portable fNIRS neuroimaging pipelines that work with BIDS datasets. See http://f
 This app will convert a directory of source files to a BIDS dataset.
 
 **Feedback is welcome!!** Please let me know your experience by raising an issue above.  
-I will help you get this working with your data.
 
 The source data must be formatted using the BIDS directory structure in the `/sourcedata` directory,
 see [here for an example of how to format the source data](https://github.com/rob-luke/BIDS-NIRS-Tapping/tree/00-Raw-data).
@@ -21,8 +20,19 @@ The app will then convert the data to BIDS format such that the resulting direct
 
 ## Usage
 
+To run the app you must pass it the location of the dataset using the `-v` command and also specify the task label you wish to use.
+
 ```bash
 docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app --task_label="Example"
+```
+
+A list of the optional arguments is provided below. A more complete example that also specifies the event duration and names is:
+
+```bash
+docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app \
+    --task_label="ListeningTask" \
+    --duration=12.5 \
+    --events="{\"1\":\"Audio\", \"2\":\"Video\", \"3\":\"Control\"}"
 ```
 
 By default the app will process all subject and tasks.
@@ -82,11 +92,7 @@ would be.
 ```
 
 
-### Complete example
 
-```bash
-docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app --task_label="ListeningTask" --duration=12.5 --events="{\"1\":\"Audio\", \"2\":\"Video\", \"3\":\"Control\"}"
-```
 
 ## Updating
 
