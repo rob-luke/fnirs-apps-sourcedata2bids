@@ -2,7 +2,7 @@
 
 [![build](https://github.com/rob-luke/fnirs-apps-sourcedata2bids/actions/workflows/ghregistry.yml/badge.svg)](https://github.com/rob-luke/fnirs-apps-sourcedata2bids/actions/workflows/ghregistry.yml)
 
-Portable fNIRS neuroimaging pipelines that work with BIDS datasets. See http://fnirs-apps.org
+http://fnirs-apps.org : Portable fNIRS neuroimaging pipelines that work with BIDS datasets.
 
 This app will convert a directory of source files to a BIDS dataset.
 
@@ -26,7 +26,7 @@ To run the app you must pass it the location of the dataset using the `-v` comma
 docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app --task_label="Example"
 ```
 
-A list of the optional arguments is provided below. A more complete example that also specifies the event duration and names is:
+A complete list of the optional arguments is provided below. A more complete example that also specifies the event duration and names is:
 
 ```bash
 docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app \
@@ -34,9 +34,6 @@ docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedat
     --duration=12.5 \
     --events="{\"1\":\"Audio\", \"2\":\"Video\", \"3\":\"Control\"}"
 ```
-
-By default the app will process all subject and tasks.
-You can modify the behaviour of the script using the options below.
 
 The source data must be formatted according to the bids folder structure.
 It must adhere to the following format.
@@ -90,8 +87,6 @@ would be.
 ```bash
 ---events="{\"1\":\"Control\", \"2\":\"Tapping/Left\", \"3\":\"Tapping/Right\"}"
 ```
-
-
 
 
 ## Updating
