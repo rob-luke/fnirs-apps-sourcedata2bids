@@ -8,4 +8,4 @@ services:
     image: fnirs-apps/source2bids
     volumes:
       - /example_data/:/bids_dataset
-    command: ["--task_label", "tapping", "--duration", "5", "--events", "{\"1\":\"Control\", \"2\":\"Tapping/Left\", \"3\":\"Tapping/Right\"}"]
+    command: ["--task_label", "tapping", "--duration", "4", "--events", "{\"1\":\"Control\", \"2\":\"Tapping/Left\", \"3\":\"Tapping/Right\"}"]
