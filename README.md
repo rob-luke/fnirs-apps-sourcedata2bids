@@ -14,8 +14,6 @@ The app will then convert the data to BIDS format such that the resulting direct
 
 #### Current limitations
 
-
-* Currently does not rename trigger numbers to something more meaningful. See [#1](https://github.com/rob-luke/fnirs-apps-sourcedata2bids/issues/1)
 * Currently only works with NIRx files. However, MNE supports Hitachi, Imagent, Artinis datatypes too. So it will be trivial to extend to these files types.  See [#2](https://github.com/rob-luke/fnirs-apps-sourcedata2bids/issues/2)
 
 
@@ -54,7 +52,7 @@ would be.
 ### Complete example
 
 ```bash
-docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app --task_label="ListeningTask" --duration=5 ---events="{\"1\":\"Control\", \"2\":\"Sound/Left\", \"3\":\"Sound/Right\"}"
+docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app --task_label="ListeningTask" --duration=5 --events="{\"1\":\"Control\", \"2\":\"Sound/Left\", \"3\":\"Sound/Right\"}"
 ```
 
 ## Updating
