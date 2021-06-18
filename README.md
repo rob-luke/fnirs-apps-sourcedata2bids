@@ -10,6 +10,12 @@ see [here for an example of how to format the source data](https://github.com/ro
 The app will then convert the data to BIDS format such that the resulting directory [looks like this example](https://github.com/rob-luke/BIDS-NIRS-Tapping/tree/master).
 
 
+#### Current limitations
+
+1. Currently only works with NIRx files. However, MNE supports Hitachi, Imagent, Artinis datatypes too. So it will be trivial to extend to these files types.
+2. Currently does not rename trigger numbers to something more meaningful.
+
+
 ## Usage
 
 ```bash
