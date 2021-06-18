@@ -40,14 +40,14 @@ It must adhere to the following format.
     │           ├── NIRS-2020-01-01_001.dat
     │           ├── NIRS-2020-01-01_001.evt
     │           ├── ...
-    |
+    │
     ├── sub-02
     │   └── nirs
     │       ├── 2020-01-02_002
     │       │   ├── NIRS-2020-01-02_002.dat
     │       │   ├── NIRS-2020-01-02_002.evt
     │       │   ├── ...
-    |
+    :
     :
     └── sub-XX
         └── nirs
