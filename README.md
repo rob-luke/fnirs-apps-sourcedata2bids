@@ -3,9 +3,10 @@
 
 Portable fNIRS neuroimaging pipelines that work with BIDS datasets. See http://fnirs-apps.org
 
-This app evaluates the channel quality of your data using the scalp coupling index metric.
-The extrated metric is saved as a column in the `channels.tsv` BIDS file.
-If a threshold is specified, then the status column in `channels.tsv` will also be set.
+This app will convert a directory of source files to a BIDS dataset.
+The source data must be formatted using BIDS directory structure in the `/sourcedata` directory,
+see [here for an example of how to format the source data](https://github.com/rob-luke/BIDS-NIRS-Tapping/tree/00-Raw-data).
+The app will then convert the data to BIDS format such that the resulting directory [looks like this example](https://github.com/rob-luke/BIDS-NIRS-Tapping/tree/master).
 
 
 ## Usage
