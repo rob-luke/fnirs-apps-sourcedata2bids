@@ -1,0 +1,11 @@
+version: "3.1"
+
+services:
+  sci:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: fnirs-apps/sci
+    volumes:
+      - /Volumes/MassStorage2TB/rluke/Repositories/BIDS-NIRS-Tapping/:/bids_dataset
+    command: ["--task_label", "tapping", "--threshold", "0.7"]
