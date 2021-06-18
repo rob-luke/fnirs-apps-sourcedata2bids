@@ -4,10 +4,11 @@
 
 Portable fNIRS neuroimaging pipelines that work with BIDS datasets. See http://fnirs-apps.org
 
+This app will convert a directory of source files to a BIDS dataset.
+
 **Feedback is welcome!!** Please let me know your experience by raising an issue above.  
 I will help you get this working with your data.
 
-This app will convert a directory of source files to a BIDS dataset.
 The source data must be formatted using the BIDS directory structure in the `/sourcedata` directory,
 see [here for an example of how to format the source data](https://github.com/rob-luke/BIDS-NIRS-Tapping/tree/00-Raw-data).
 The app will then convert the data to BIDS format such that the resulting directory [looks like this example](https://github.com/rob-luke/BIDS-NIRS-Tapping/tree/master). See usage instructions below.
