@@ -23,8 +23,9 @@ You can modify the behaviour of the script using the options below.
 
 |                   | Required | Default | Note                                                   |
 |-------------------|----------|---------|--------------------------------------------------------|
-| task              | required |         | Task name to use for data.                             |
+| task_label        | required |         | Task name to use for data.                             |
 | participant_label | optional | []      | Participants to process. Default is to process all.    |
+| duration          | optional | 1       | Duration of stimulus.                                  |
 
 
 

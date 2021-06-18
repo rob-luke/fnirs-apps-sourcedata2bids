@@ -2,8 +2,11 @@
 import pandas as pd
 import numpy as np
 import mne
+import mne_nirs
+import os
 import argparse
-from mne_bids import BIDSPath, read_raw_bids
+from mne_bids import BIDSPath, write_raw_bids, print_dir_tree
+from mne_nirs.io.snirf import write_raw_snirf
 from glob import glob
 import os.path as op
 
@@ -14,8 +17,8 @@ parser = argparse.ArgumentParser(description='Scalp coupling index')
 parser.add_argument('--bids_dir', default="/bids_dataset", type=str,
                     help='The directory with the input dataset '
                     'formatted according to the BIDS standard.')
-parser.add_argument('--threshold', type=float, default=1.0,
-                    help='Threshold below which a channel is marked as bad.')
+parser.add_argument('--duration', type=float, default=1.0,
+                    help='Duration of stimulus.')
 parser.add_argument('--participant_label',
                     help='The label(s) of the participant(s) that should be '
                     'analyzed. The label corresponds to '
@@ -40,16 +43,11 @@ args = parser.parse_args()
 # Extract parameters
 ########################################
 
-if args.threshold == 1.0:
-    print("No threshold was set, so the status column will not be modified")
-
 ids = []
-# only for a subset of subjects
 if args.participant_label:
     ids = args.participant_label
-# for all subjects
 else:
-    subject_dirs = glob(op.join(args.bids_dir, "sub-*"))
+    subject_dirs = glob(op.join(args.bids_dir, "sourcedata/sub-*"))
     ids = [subject_dir.split("-")[-1] for
            subject_dir in subject_dirs]
     print(f"No participants specified, processing {ids}")
@@ -59,13 +57,7 @@ tasks = []
 if args.task_label:
     tasks = args.task_label
 else:
-    all_snirfs = glob("/bids_dataset/**/*_nirs.snirf", recursive=True)
-    for a in all_snirfs:
-        s = a.split("_task-")[1]
-        s = s.split("_nirs.snirf")[0]
-        tasks.append(s)
-    tasks = np.unique(tasks)
-    print(f"No tasks specified, processing {tasks}")
+    raise ValueError(f"You must specify a task label")
 
 
 ########################################
@@ -76,24 +68,22 @@ print(" ")
 for id in ids:
     for task in tasks:
         b_path = BIDSPath(subject=id, task=task,
-                          root="/bids_dataset",
+                          root="/bids_dataset/sourcedata",
                           datatype="nirs", suffix="nirs",
                           extension=".snirf")
-        try:
-            raw = read_raw_bids(b_path, verbose=True)
-            raw = mne.preprocessing.nirs.optical_density(raw)
-            sci = mne.preprocessing.nirs.scalp_coupling_index(raw)
-            fname_chan = b_path.update(suffix='channels',
-                                       extension='.tsv').fpath
-            chans = pd.read_csv(fname_chan, sep='\t')
-            for idx in range(len(raw.ch_names)):
-                assert raw.ch_names[idx] == chans["name"][idx]
-            chans["SCI"] = sci
-            if args.threshold < 1.0:
-                chans["status"] = sci > args.threshold
-            chans.to_csv(fname_chan, sep='\t', index=False)
-        except FileNotFoundError:
-            print(f"Unable to process {b_path.fpath}")
-        else:
-            print(f"Unknown error processing {b_path.fpath}")
+        dname = str(b_path.directory)
+        fname = dname + "/" + next(os.walk(dname))[1][0]
+        print(f"Reading source directory: {fname}")
+        raw = mne.io.read_raw_nirx(fname, preload=False)
+        snirf_path = dname + "/" + b_path.basename + ".snirf"
+        write_raw_snirf(raw, snirf_path)
+        raw = mne.io.read_raw_snirf(snirf_path, preload=False)
+        raw.annotations.duration = np.ones(raw.annotations.duration.shape) *\
+                                   args.duration
+        raw.info['line_freq'] = 50
+        bids_path = BIDSPath(subject=id, task=task,
+                             datatype='nirs', root='/bids_dataset')
+        write_raw_bids(raw, bids_path, overwrite=True)
+        os.remove(snirf_path)
 
+# print_dir_tree("/bids_dataset")

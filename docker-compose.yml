@@ -1,11 +1,11 @@
 version: "3.1"
 
 services:
-  sci:
+  source2bids:
     build:
       context: ./
       dockerfile: Dockerfile
-    image: fnirs-apps/sci
+    image: fnirs-apps/source2bids
     volumes:
       - /Volumes/MassStorage2TB/rluke/Repositories/BIDS-NIRS-Tapping/:/bids_dataset
-    command: ["--task_label", "tapping", "--threshold", "0.7"]
+    command: ["--task_label", "tapping"]

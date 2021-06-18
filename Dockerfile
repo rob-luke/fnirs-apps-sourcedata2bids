@@ -7,12 +7,12 @@ RUN conda install --yes \
     matplotlib
 
 # TODO: try installing via conda or requirements.txt
-RUN pip install seaborn
 RUN pip install mne
 RUN pip install https://codeload.github.com/rob-luke/mne-bids/zip/nirs
 RUN pip install https://github.com/nilearn/nilearn/archive/main.zip
 RUN pip install mne-nirs
 RUN pip install h5py
+RUN pip install seaborn
 
 COPY script.py /usr/bin/script.py
 
