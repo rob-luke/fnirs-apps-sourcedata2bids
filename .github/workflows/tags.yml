@@ -33,8 +33,14 @@ jobs:
       - name: Build docker image
         run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} .
         
-      - name: Tag image
+      - name: Tag image for versioned release
         run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app:${{ env.RELEASE_VERSION }}
 
-      - name: Push image to github
+      - name: Push image to github for versioned release
         run: docker push ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app:${{ env.RELEASE_VERSION }}
+        
+      - name: Tag image
+        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app
+
+      - name: Push image to github
+        run: docker push ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app:latest
