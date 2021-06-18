@@ -22,7 +22,7 @@ The app will then convert the data to BIDS format such that the resulting direct
 ## Usage
 
 ```bash
-docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app
+docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app --task_label="Example"
 ```
 
 By default the app will process all subject and tasks.
@@ -39,7 +39,7 @@ You can modify the behaviour of the script using the options below.
 | participant_label | optional | []      | Participants to process. Default is to process all.    |
 
 
-#### Events
+### Events
 
 To specify events you must pass in a dictionary specifying each code and associated name.
 Annoyingly on some operating systems you need to add a backslash before the quotes.
@@ -48,6 +48,13 @@ would be.
 
 ```bash
 ---events="{\"1\":\"Control\", \"2\":\"Tapping/Left\", \"3\":\"Tapping/Right\"}"
+```
+
+
+### Complete example
+
+```bash
+docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app --task_label="ListeningTask" --duration=5 ---events="{\"1\":\"Control\", \"2\":\"Sound/Left\", \"3\":\"Sound/Right\"}"
 ```
 
 ## Updating
