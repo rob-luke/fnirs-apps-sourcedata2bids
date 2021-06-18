@@ -24,10 +24,21 @@ You can modify the behaviour of the script using the options below.
 |                   | Required | Default | Note                                                   |
 |-------------------|----------|---------|--------------------------------------------------------|
 | task_label        | required |         | Task name to use for data.                             |
-| participant_label | optional | []      | Participants to process. Default is to process all.    |
+| events            | optional | 1       | Specifes the naming of different event triggers. i.e. converts a trigger number of 2 to the code "stimulus" and the code 1 to "control"                               |
 | duration          | optional | 1       | Duration of stimulus.                                  |
+| participant_label | optional | []      | Participants to process. Default is to process all.    |
 
 
+#### Events
+
+To specify events you must pass in a dictionary specifying each code and associated name.
+Annoyingly on some operating systems you need to add a backslash before the quotes.
+So the command to convert trigger 1 to control, 2 to Tapping/Left, and 3 to Tapping/Right
+would be.
+
+```bash
+---events="{\"1\":\"Control\", \"2\":\"Tapping/Left\", \"3\":\"Tapping/Right\"}"
+```
 
 ## Updating
 

@@ -9,6 +9,7 @@ from mne_bids import BIDSPath, write_raw_bids, print_dir_tree
 from mne_nirs.io.snirf import write_raw_snirf
 from glob import glob
 import os.path as op
+import json
 
 __version__ = "v0.0.1"
 
@@ -17,6 +18,8 @@ parser = argparse.ArgumentParser(description='Scalp coupling index')
 parser.add_argument('--bids_dir', default="/bids_dataset", type=str,
                     help='The directory with the input dataset '
                     'formatted according to the BIDS standard.')
+parser.add_argument('--events', type=json.loads,
+                    help='Event labels.')
 parser.add_argument('--duration', type=float, default=1.0,
                     help='Duration of stimulus.')
 parser.add_argument('--participant_label',
@@ -59,6 +62,20 @@ if args.task_label:
 else:
     raise ValueError(f"You must specify a task label")
 
+events = []
+if args.events:
+    # Convert to int keys
+    _events = args.events
+    trial_type = dict()
+    event_codes = dict()
+    for event in _events:
+        trial_type[int(event)] = _events[event]
+        event_codes[str(float(event))] = int(event)
+    print(f"You specified the events {trial_type}")
+    print(f"Which has the corresponding codes {event_codes}")
+else:
+    raise ValueError(f"You must specify a task label")
+
 
 ########################################
 # Main script
@@ -78,6 +95,10 @@ for id in ids:
         snirf_path = dname + "/" + b_path.basename + ".snirf"
         write_raw_snirf(raw, snirf_path)
         raw = mne.io.read_raw_snirf(snirf_path, preload=False)
+        events, event_id = mne.events_from_annotations(raw, event_codes)
+        raw.set_annotations(
+            mne.annotations_from_events(events, raw.info['sfreq'],
+                                        event_desc=trial_type))
         raw.annotations.duration = np.ones(raw.annotations.duration.shape) *\
                                    args.duration
         raw.info['line_freq'] = 50
