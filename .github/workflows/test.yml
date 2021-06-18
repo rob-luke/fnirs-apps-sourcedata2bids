@@ -27,7 +27,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build docker image
-        run: DOCKER_BUILDKIT=1 docker compose build
+        run: docker-compose build
 
       - name: Run docker image
-        run: DOCKER_BUILDKIT=1 docker compose up
+        run: docker-compose up
