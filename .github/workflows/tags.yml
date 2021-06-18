@@ -21,12 +21,20 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Set env for release
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Print release information
+        run: |
+          echo $RELEASE_VERSION
+          echo ${{ env.RELEASE_VERSION }}    
 
       - name: Build docker image
         run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} .
         
       - name: Tag image
-        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app
+        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app    
 
       - name: Push image to github
-        run: docker push ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app:${{ github.event.release.tag_name }}
+        run: docker push ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app:${{ env.RELEASE_VERSION }} 
