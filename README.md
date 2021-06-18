@@ -4,12 +4,13 @@
 
 Portable fNIRS neuroimaging pipelines that work with BIDS datasets. See http://fnirs-apps.org
 
-**Feedback is welcome!!** Please let me know your experience by raising an issue above. I will help you get this working with your data.
+**Feedback is welcome!!** Please let me know your experience by raising an issue above.  
+I will help you get this working with your data.
 
 This app will convert a directory of source files to a BIDS dataset.
-The source data must be formatted using BIDS directory structure in the `/sourcedata` directory,
+The source data must be formatted using the BIDS directory structure in the `/sourcedata` directory,
 see [here for an example of how to format the source data](https://github.com/rob-luke/BIDS-NIRS-Tapping/tree/00-Raw-data).
-The app will then convert the data to BIDS format such that the resulting directory [looks like this example](https://github.com/rob-luke/BIDS-NIRS-Tapping/tree/master).
+The app will then convert the data to BIDS format such that the resulting directory [looks like this example](https://github.com/rob-luke/BIDS-NIRS-Tapping/tree/master). See usage instructions below.
 
 
 #### Current limitations
@@ -25,6 +26,42 @@ docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedat
 
 By default the app will process all subject and tasks.
 You can modify the behaviour of the script using the options below.
+
+The source data must be formatted according to the bids folder structure.
+It must adhere to the following format.
+
+```text
+.
+└── sourcedata
+    ├── sub-01
+    │   └── nirs
+    │       └── 2020-01-01_001
+    │           ├── NIRS-2020-01-01_001.dat
+    │           ├── NIRS-2020-01-01_001.evt
+    │           ├── ...
+    ├── sub-02
+    │   └── nirs
+    │       ├── 2020-01-02_002
+    │       │   ├── NIRS-2020-01-02_002.dat
+    │       │   ├── NIRS-2020-01-02_002.evt
+    │       │   ├── ...
+    ├── sub-03
+    │   └── nirs
+    │       └── 2020-01-03_003
+    │           ├── NIRS-2020-01-03_003.dat
+    │           ├── NIRS-2020-01-03_003.evt
+    │           ├── ...
+    :
+    :
+    └── sub-XX
+        └── nirs
+            └── 2020-01-05_005
+                ├── NIRS-2020-01-05_005.dat
+                ├── NIRS-2020-01-05_005.evt
+                ├── ...
+                └── NIRS-2020-01-05_005_probeInfo.mat
+
+```
 
 
 ## Arguments
@@ -52,7 +89,7 @@ would be.
 ### Complete example
 
 ```bash
-docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app --task_label="ListeningTask" --duration=5 --events="{\"1\":\"Control\", \"2\":\"Sound/Left\", \"3\":\"Sound/Right\"}"
+docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app --task_label="ListeningTask" --duration=12.5 --events="{\"1\":\"Audio\", \"2\":\"Video\", \"3\":\"Control\"}"
 ```
 
 ## Updating
