@@ -24,7 +24,7 @@ You must also specify the task label you wish to use.
 A minimal example of how to run this app is:
 
 ```bash
-docker run -v /data/path/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app --task_label="example"
+docker run -v /data/path/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app --task_label exampletask
 ```
 
 You can also specify additional parameters by passing arguments to the app. A complete list of arguments is provided below.
@@ -32,9 +32,9 @@ A more complete example that also specifies the event duration and names is:
 
 ```bash
 docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app \
-    --task_label="audiovisual" \
-    --duration=12.5 \
-    --events="{\"1\":\"Audio\", \"2\":\"Video\", \"3\":\"Control\"}"
+    --task_label audiovisual \
+    --duration 12.5 \
+    --events "{\"1\":\"Audio\", \"2\":\"Video\", \"3\":\"Control\"}"
 ```
 
 #### Source data organisation
@@ -92,11 +92,11 @@ So the command to convert trigger 1 to control, 2 to Tapping/Left, and 3 to Tapp
 would be.
 
 ```bash
----events="{\"1\":\"Control\", \"2\":\"Tapping/Left\", \"3\":\"Tapping/Right\"}"
+--events "{\"1\":\"Control\", \"2\":\"Tapping/Left\", \"3\":\"Tapping/Right\"}"
 ```
 
 
-## Updating
+## Updating and running specific versions
 
 To update to the latest version run.
 
