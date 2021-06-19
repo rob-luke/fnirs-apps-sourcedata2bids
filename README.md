@@ -2,55 +2,62 @@
 
 [![build](https://github.com/rob-luke/fnirs-apps-sourcedata2bids/actions/workflows/ghregistry.yml/badge.svg)](https://github.com/rob-luke/fnirs-apps-sourcedata2bids/actions/workflows/ghregistry.yml)
 
-http://fnirs-apps.org : Portable fNIRS neuroimaging pipelines that work with BIDS datasets.
+This [*fNIRS App*](http://fnirs-apps.org) will convert a directory of fNIRS files to a correctly fomatted BIDS dataset.
 
-This app will convert a directory of source files to a BIDS dataset.
-
-**Feedback is welcome!!** Please let me know your experience by raising an issue above.  
-
-The source data must be formatted using the BIDS directory structure in the `/sourcedata` directory,
-see [here for an example of how to format the source data](https://github.com/rob-luke/BIDS-NIRS-Tapping/tree/00-Raw-data).
-The app will then convert the data to BIDS format such that the resulting directory [looks like this example](https://github.com/rob-luke/BIDS-NIRS-Tapping/tree/master). See usage instructions below.
-
+To use this app the original measurement files (source data) must be organised according to the file structure specified below.
+The app will then convert the raw data to a BIDS dataset, including conversion to SNIRF and creation of all metadata files.
 
 #### Current limitations
 
-* Currently only works with NIRx files. However, MNE supports Hitachi, Imagent, Artinis datatypes too. So it will be trivial to extend to these files types.  See [#2](https://github.com/rob-luke/fnirs-apps-sourcedata2bids/issues/2)
+* Only works with NIRx files. However due to support in MNE, it will be trivial to extend to Hitachi, Imagent, Artinis datatypes too.
+
+**Feedback is welcome!!** Please let me know your experience with this app by raising an issue.  
 
 
 ## Usage
 
-To run the app you must pass it the location of the dataset using the `-v` command and also specify the task label you wish to use.
+To run the app you must have [docker installed](https://docs.docker.com/get-docker/). See here for details about [installing fNIRS Apps](http://fnirs-apps.org/details/). You do NOT need to have MATLAB or python installed, and you do not need any scripts.
+
+To run the app you must inform it where the `bids_dataset` to be formatted resides.
+This is done by passing the app the location of the dataset using the `-v` command.
+You must also specify the task label you wish to use.
+A minimal example of how to run this app is:
 
 ```bash
-docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app --task_label="Example"
+docker run -v /data/path/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app --task_label="example"
 ```
 
-A complete list of the optional arguments is provided below. A more complete example that also specifies the event duration and names is:
+You can also specify additional parameters by passing arguments to the app. A complete list of arguments is provided below.
+A more complete example that also specifies the event duration and names is:
 
 ```bash
 docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app \
-    --task_label="ListeningTask" \
+    --task_label="audiovisual" \
     --duration=12.5 \
     --events="{\"1\":\"Audio\", \"2\":\"Video\", \"3\":\"Control\"}"
 ```
 
-The source data must be formatted according to the bids folder structure.
-It must adhere to the following format.
+#### Source data organisation
+
+The source data must be organised in a specific structure to use this app.
+The data must reside within a `sourcedata` subdirectory at the top level of the `bids_dataset` directory.
+A schematic of the required structure is shown below.
+You can also view an [example source dataset that is ready for conversion here](https://github.com/rob-luke/BIDS-NIRS-Tapping/tree/00-Raw-data).
+
 
 ```text
 .
 └── sourcedata
     ├── sub-01
     │   └── nirs
-    │       └── 2020-01-01_001
+    │       └── 2020-01-01_001     (the naming of this directory and included files is optional)
     │           ├── NIRS-2020-01-01_001.dat
     │           ├── NIRS-2020-01-01_001.evt
     │           ├── ...
     │
     ├── sub-02
     │   └── nirs
-    │       └── 2020-01-02_002
+    │       └── 2020-01-02_002     (just use the vendor exported format for this directory)
     │           ├── NIRS-2020-01-02_002.dat
     │           ├── NIRS-2020-01-02_002.evt
     │           ├── ...
@@ -72,7 +79,7 @@ It must adhere to the following format.
 |                   | Required | Default | Note                                                   |
 |-------------------|----------|---------|--------------------------------------------------------|
 | task_label        | required |         | Task name to use for data.                             |
-| events            | optional | 1       | Specifes the naming of different event triggers. i.e. converts a trigger number of 2 to the code "stimulus" and the code 1 to "control"                               |
+| events            | optional | []      | Specifes the naming of different event triggers. i.e. converts a trigger number of 2 to the code "stimulus" and the code 1 to "control"                               |
 | duration          | optional | 1       | Duration of stimulus.                                  |
 | participant_label | optional | []      | Participants to process. Default is to process all.    |
 
