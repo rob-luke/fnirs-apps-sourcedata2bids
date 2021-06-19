@@ -74,7 +74,7 @@ if args.events:
     print(f"You specified the events {trial_type}")
     print(f"Which has the corresponding codes {event_codes}")
 else:
-    raise ValueError(f"You must specify a task label")
+    print("No events specified. Using default coding.")
 
 
 ########################################
