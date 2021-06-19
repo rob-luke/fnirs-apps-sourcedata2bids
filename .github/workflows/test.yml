@@ -38,4 +38,4 @@ jobs:
           path: /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data
 
       - name: Build docker image
-        run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset --task_label="test" .
+        run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset . --task_label="test" 
