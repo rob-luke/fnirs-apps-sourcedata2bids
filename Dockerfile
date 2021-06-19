@@ -14,8 +14,6 @@ RUN pip install mne-nirs
 RUN pip install h5py
 RUN pip install seaborn
 
-COPY script.py /usr/bin/script.py
+COPY run.py /run.py
 
-RUN mkdir /data
-
-ENTRYPOINT ["tini", "-g", "--", "python", "/usr/bin/script.py"]
+ENTRYPOINT ["/run.py"]
