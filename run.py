@@ -11,7 +11,23 @@ from glob import glob
 import os.path as op
 import json
 
-__version__ = "v0.0.1"
+__version__ = "v0.0.5"
+
+
+def run(command, env={}):
+    merged_env = os.environ
+    merged_env.update(env)
+    process = subprocess.Popen(command, stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT, shell=True,
+                               env=merged_env)
+    while True:
+        line = process.stdout.readline()
+        line = str(line, 'utf-8')[:-1]
+        print(line)
+        if line == '' and process.poll() != None:
+            break
+    if process.returncode != 0:
+        raise Exception("Non zero return code: %d" % process.returncode)
 
 
 parser = argparse.ArgumentParser(description='Scalp coupling index')
@@ -60,7 +76,7 @@ tasks = []
 if args.task_label:
     tasks = args.task_label
 else:
-    raise ValueError(f"You must specify a task label")
+    raise ValueError(f"You must specify a task label, received {args.task_label}")
 
 events = []
 if args.events:
@@ -74,7 +90,8 @@ if args.events:
     print(f"You specified the events {trial_type}")
     print(f"Which has the corresponding codes {event_codes}")
 else:
-    raise ValueError(f"You must specify a task label")
+    print("No events specified. Using default coding.")
+
 
 
 ########################################
@@ -85,7 +102,7 @@ print(" ")
 for id in ids:
     for task in tasks:
         b_path = BIDSPath(subject=id, task=task,
-                          root="/bids_dataset/sourcedata",
+                          root=f"{args.bids_dir}/sourcedata",
                           datatype="nirs", suffix="nirs",
                           extension=".snirf")
         dname = str(b_path.directory)
@@ -95,15 +112,16 @@ for id in ids:
         snirf_path = dname + "/" + b_path.basename + ".snirf"
         write_raw_snirf(raw, snirf_path)
         raw = mne.io.read_raw_snirf(snirf_path, preload=False)
-        events, event_id = mne.events_from_annotations(raw, event_codes)
-        raw.set_annotations(
-            mne.annotations_from_events(events, raw.info['sfreq'],
-                                        event_desc=trial_type))
+        if args.events:
+            events, event_id = mne.events_from_annotations(raw, event_codes)
+            raw.set_annotations(
+                mne.annotations_from_events(events, raw.info['sfreq'],
+                                            event_desc=trial_type))
         raw.annotations.duration = np.ones(raw.annotations.duration.shape) *\
                                    args.duration
         raw.info['line_freq'] = 50
         bids_path = BIDSPath(subject=id, task=task,
-                             datatype='nirs', root='/bids_dataset')
+                             datatype='nirs', root=f"{args.bids_dir}")
         write_raw_bids(raw, bids_path, overwrite=True)
         os.remove(snirf_path)
 

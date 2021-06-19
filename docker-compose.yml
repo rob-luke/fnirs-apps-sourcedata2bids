@@ -7,5 +7,5 @@ services:
       dockerfile: Dockerfile
     image: fnirs-apps/source2bids
     volumes:
-      - /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset
+      - /Volumes/MassStorage2TB/rluke/Repositories/BIDS-NIRS-Tapping/:/bids_dataset
     command: ["--task_label", "tapping", "--duration", "5", "--events", "{\"1\":\"Control\", \"2\":\"Tapping/Left\", \"3\":\"Tapping/Right\"}"]
