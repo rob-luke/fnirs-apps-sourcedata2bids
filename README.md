@@ -57,7 +57,7 @@ You can also view an [example source dataset that is ready for conversion here](
     │
     ├── sub-02
     │   └── nirs
-    │       └── 2020-01-02_002     (just use the vendor exported format for this directory)
+    │       └── 2020-01-02_002     (use the vendor exported format for these directories)
     │           ├── NIRS-2020-01-02_002.dat
     │           ├── NIRS-2020-01-02_002.evt
     │           ├── ...
