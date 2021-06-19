@@ -10,6 +10,7 @@ from mne_nirs.io.snirf import write_raw_snirf
 from glob import glob
 import os.path as op
 import json
+import subprocess
 
 __version__ = "v0.0.5"
 
