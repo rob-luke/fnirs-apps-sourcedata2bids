@@ -12,10 +12,10 @@ import os.path as op
 import json
 import subprocess
 
-__version__ = "v0.0.6"
+__version__ = "v0.1.0"
 
 
-def run(command, env={}):
+def fnirsapp_sourcedata2bids(command, env={}):
     merged_env = os.environ
     merged_env.update(env)
     process = subprocess.Popen(command, stdout=subprocess.PIPE,
@@ -32,22 +32,22 @@ def run(command, env={}):
 
 
 parser = argparse.ArgumentParser(description='Scalp coupling index')
-parser.add_argument('--bids_dir', default="/bids_dataset", type=str,
+parser.add_argument('--input-datasets', default="/bids_dataset", type=str,
                     help='The directory with the input dataset '
                     'formatted according to the BIDS standard.')
 parser.add_argument('--events', type=json.loads,
                     help='Event labels.')
 parser.add_argument('--duration', type=float, default=1.0,
                     help='Duration of stimulus.')
-parser.add_argument('--participant_label',
+parser.add_argument('--subject-label',
                     help='The label(s) of the participant(s) that should be '
                     'analyzed. The label corresponds to '
-                    'sub-<participant_label> from the BIDS spec (so it does '
+                    'sub-<subject-label> from the BIDS spec (so it does '
                     'not include "sub-"). If this parameter is not provided '
                     'all subjects should be analyzed. Multiple participants '
                     'can be specified with a space separated list.',
                     nargs="+")
-parser.add_argument('--task_label',
+parser.add_argument('--task-label',
                     help='The label(s) of the tasks(s) that should be '
                     'analyzed. If this parameter is not provided '
                     'all tasks should be analyzed. Multiple tasks '
@@ -64,10 +64,10 @@ args = parser.parse_args()
 ########################################
 
 ids = []
-if args.participant_label:
-    ids = args.participant_label
+if args.subject_label:
+    ids = args.subject_label
 else:
-    subject_dirs = glob(op.join(args.bids_dir, "sourcedata/sub-*"))
+    subject_dirs = glob(op.join(args.input_datasets, "sourcedata/sub-*"))
     ids = [subject_dir.split("-")[-1] for
            subject_dir in subject_dirs]
     print(f"No participants specified, processing {ids}")
@@ -103,7 +103,7 @@ print(" ")
 for id in ids:
     for task in tasks:
         b_path = BIDSPath(subject=id, task=task,
-                          root=f"{args.bids_dir}/sourcedata",
+                          root=f"{args.input_datasets}/sourcedata",
                           datatype="nirs", suffix="nirs",
                           extension=".snirf")
         dname = str(b_path.directory)
@@ -122,7 +122,7 @@ for id in ids:
                                    args.duration
         raw.info['line_freq'] = 50
         bids_path = BIDSPath(subject=id, task=task,
-                             datatype='nirs', root=f"{args.bids_dir}")
+                             datatype='nirs', root=f"{args.input_datasets}")
         write_raw_bids(raw, bids_path, overwrite=True)
         os.remove(snirf_path)
 

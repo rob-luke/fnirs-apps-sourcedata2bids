@@ -1,0 +1,11 @@
+{
+    "input_datasets": "/home/runner/work/fnirs-apps-sourcedata2bids/fnirs-apps-sourcedata2bids/example_data/BIDS-NIRS-Tapping-master",
+    "subject_label": [
+        "01",
+        "02"
+    ],
+    "task_label": [
+        "tapping"
+    ],
+    "duration": 5
+}
