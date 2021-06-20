@@ -1,6 +1,6 @@
 {
-    "name": "fNIRS Apps: Sourcedata 2 BIDS",
-    "description": "Create fNIRS BIDS dataset from source data",
+    "name": "fNIRS Apps: Sourcedata to BIDS",
+    "description": "Create fNIRS BIDS datasets from source data",
     "author": "Robert Luke",
     "tool-version": "v0.1.0",
     "schema-version": "0.5",
@@ -54,7 +54,7 @@
             "id": "duration",
             "name": "duration",
             "optional": true,
-            "type": "String",
+            "type": "Number",
             "value-key": "[Duration]"
         }
     ],

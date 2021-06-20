@@ -24,7 +24,7 @@ You must also specify the task label you wish to use.
 A minimal example of how to run this app is:
 
 ```bash
-docker run -v /data/path/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app --task_label exampletask
+docker run -v /data/path/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app --task-label exampletask
 ```
 
 You can also specify additional parameters by passing arguments to the app. A complete list of arguments is provided below.
@@ -32,7 +32,7 @@ A more complete example that also specifies the event duration and names is:
 
 ```bash
 docker run -v /path/to/data/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app \
-    --task_label audiovisual \
+    --task-label audiovisual \
     --duration 12.5 \
     --events "{\"1\":\"Audio\", \"2\":\"Video\", \"3\":\"Control\"}"
 ```
@@ -78,10 +78,10 @@ You can also view an [example source dataset that is ready for conversion here](
 
 |                   | Required | Default | Note                                                   |
 |-------------------|----------|---------|--------------------------------------------------------|
-| task_label        | required |         | Task name to use for data.                             |
+| task-label        | required |         | Task name to use for data.                             |
 | events            | optional | []      | Specifes the naming of different event triggers. i.e. converts a trigger number of 2 to the code "stimulus" and the code 1 to "control"                               |
 | duration          | optional | 1       | Duration of stimulus.                                  |
-| participant_label | optional | []      | Participants to process. Default is to process all.    |
+| participant-label | optional | []      | Participants to process. Default is to process all.    |
 
 
 ### Events
