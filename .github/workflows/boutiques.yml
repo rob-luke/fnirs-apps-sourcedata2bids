@@ -27,7 +27,7 @@ jobs:
       - name: Download test data
         shell: bash -el {0}
         run: |
-          curl -L https://github.com/rob-luke/BIDS-NIRS-Tapping/archive/master.zip --output data.zip
+          curl -L https://github.com/rob-luke/BIDS-NIRS-Tapping/archive/00-Raw-data.zip --output data.zip
           pwd
           unzip data.zip -d ./example_data
           ls
