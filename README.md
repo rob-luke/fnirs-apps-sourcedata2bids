@@ -81,7 +81,7 @@ You can also view an [example source dataset that is ready for conversion here](
 | task-label        | required |         | Task name to use for data.                             |
 | events            | optional | []      | Specifes the naming of different event triggers. i.e. converts a trigger number of 2 to the code "stimulus" and the code 1 to "control"                               |
 | duration          | optional | 1       | Duration of stimulus.                                  |
-| participant-label | optional | []      | Participants to process. Default is to process all.    |
+| subject-label     | optional | []      | Subjects to process. Default is to process all.        |
 
 
 ### Events
