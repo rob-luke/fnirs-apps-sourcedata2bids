@@ -14,6 +14,7 @@ RUN pip install mne-nirs
 RUN pip install h5py
 RUN pip install seaborn
 
-COPY run.py /run.py
+COPY fnirsapp_sourcedata2bids.py /run.py
+RUN chmod +x /run.py
 
 ENTRYPOINT ["/run.py"]
