@@ -1,6 +1,8 @@
 # fNIRS App: Sourcedata to BIDS
 
 [![build](https://github.com/rob-luke/fnirs-apps-sourcedata2bids/actions/workflows/ghregistry.yml/badge.svg)](https://github.com/rob-luke/fnirs-apps-sourcedata2bids/actions/workflows/ghregistry.yml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4999341.svg)](https://doi.org/10.5281/zenodo.4999341)
+
 
 This [*fNIRS App*](http://fnirs-apps.org) will convert a directory of fNIRS files to a correctly fomatted BIDS dataset.
 
