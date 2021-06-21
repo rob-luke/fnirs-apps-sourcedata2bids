@@ -18,10 +18,10 @@ The app will then convert the raw data to a BIDS dataset, including conversion t
 
 ## Usage
 
-To run the app you must have [docker installed](https://docs.docker.com/get-docker/). See here for details about [installing fNIRS Apps](http://fnirs-apps.org/details/). You do NOT need to have MATLAB or python installed, and you do not need any scripts.
+To run the app you must have [docker installed](https://docs.docker.com/get-docker/). See here for details about [installing fNIRS Apps](http://fnirs-apps.org/overview//). You do NOT need to have MATLAB or python installed, and you do not need any scripts. See this [tutorial for an introduction to fNIRS Apps](http://fnirs-apps.org/tutorial/).
 
 To run the app you must inform it where the `bids_dataset` to be formatted resides.
-This is done by passing the app the location of the dataset using the `-v` command.
+This is done by passing the location of the dataset using the `-v` command to the app.
 You must also specify the task label you wish to use.
 A minimal example of how to run this app is:
 
@@ -112,6 +112,12 @@ Or to run a specific version:
 docker run -v /path/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app:v1.4.2
 ```
 
+## Additional information
+
+#### Boutiques
+
+This app is [boutiques compatible](https://boutiques.github.io).
+In addition to the methods described above, this app can also be run using [boutiques bosh command](https://boutiques.github.io/doc/index.html).
 
 
 Acknowledgements
