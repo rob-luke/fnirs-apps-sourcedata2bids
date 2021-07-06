@@ -5,14 +5,15 @@ import mne
 import mne_nirs
 import os
 import argparse
-from mne_bids import BIDSPath, write_raw_bids, print_dir_tree
+from mne_bids import BIDSPath, write_raw_bids, print_dir_tree, get_entity_vals
 from mne_nirs.io.snirf import write_raw_snirf
+from mne.utils import logger
 from glob import glob
 import os.path as op
 import json
 import subprocess
 
-__version__ = "v0.1.0"
+__version__ = "v0.2.0"
 
 
 def fnirsapp_sourcedata2bids(command, env={}):
@@ -47,6 +48,14 @@ parser.add_argument('--subject-label',
                     'all subjects should be analyzed. Multiple participants '
                     'can be specified with a space separated list.',
                     nargs="+")
+parser.add_argument('--session-label',
+                    help='The label(s) of the session(s) that should be '
+                    'analyzed. The label corresponds to '
+                    'ses-<session-label> from the BIDS spec (so it does '
+                    'not include "ses-"). If this parameter is not provided '
+                    'all sessions should be analyzed. Multiple sessions '
+                    'can be specified with a space separated list.',
+                    nargs="+")
 parser.add_argument('--task-label',
                     help='The label(s) of the tasks(s) that should be '
                     'analyzed. If this parameter is not provided '
@@ -58,29 +67,57 @@ parser.add_argument('-v', '--version', action='version',
                     f'{__version__}')
 args = parser.parse_args()
 
+mne.set_log_level("INFO")
+logger.info("\n")
+
 
 ########################################
 # Extract parameters
 ########################################
 
-ids = []
+logger.info("Extracting subject metadata.")
+subs = []
 if args.subject_label:
-    ids = args.subject_label
+    logger.info("    Subject data provided as input argument.")
+    subs = args.subject_label
 else:
+    logger.info("    Subject data will be extracted from data.")
     subject_dirs = glob(op.join(args.input_datasets, "sourcedata/sub-*"))
-    ids = [subject_dir.split("-")[-1] for
-           subject_dir in subject_dirs]
-    print(f"No participants specified, processing {ids}")
+    subs = [subject_dir.split("-")[-1] for
+            subject_dir in subject_dirs]
+logger.info(f"        Subjects: {subs}")
 
 
+logger.info("Extracting session metadata.")
+sess = []
+if args.session_label:
+    logger.info("    Session data provided as input argument.")
+    sess = args.session_label
+else:
+    logger.info("    Session data will be extracted from data.")
+    session_dirs = glob(op.join(args.input_datasets, "sourcedata/sub-*/ses-*/"))
+    sess = [session_dir.split("-")[-1].replace("/", "") for
+            session_dir in session_dirs]
+    sess = np.unique(sess)
+if len(sess) == 0:
+    sess = [None]
+logger.info(f"        Sessions: {sess}")
+
+
+logger.info("Extracting tasks metadata.")
 tasks = []
 if args.task_label:
+    logger.info("    Task data provided as input argument.")
     tasks = args.task_label
 else:
     raise ValueError(f"You must specify a task label, received {args.task_label}")
+logger.info(f"        Tasks: {tasks}")
 
+
+logger.info("Extracting event metadata.")
 events = []
 if args.events:
+    logger.info("    Event data provided as input argument.")
     # Convert to int keys
     _events = args.events
     trial_type = dict()
@@ -88,11 +125,10 @@ if args.events:
     for event in _events:
         trial_type[int(event)] = _events[event]
         event_codes[str(float(event))] = int(event)
-    print(f"You specified the events {trial_type}")
-    print(f"Which has the corresponding codes {event_codes}")
+    logger.info(f"        Events: {trial_type}")
+    logger.info(f"        Codes:  {event_codes}")
 else:
-    print("No events specified. Using default coding.")
-
+    logger.info("    No event data provided, using default coding.")
 
 
 ########################################
@@ -100,30 +136,46 @@ else:
 ########################################
 
 print(" ")
-for id in ids:
+for sub in subs:
     for task in tasks:
-        b_path = BIDSPath(subject=id, task=task,
-                          root=f"{args.input_datasets}/sourcedata",
-                          datatype="nirs", suffix="nirs",
-                          extension=".snirf")
-        dname = str(b_path.directory)
-        fname = dname + "/" + next(os.walk(dname))[1][0]
-        print(f"Reading source directory: {fname}")
-        raw = mne.io.read_raw_nirx(fname, preload=False)
-        snirf_path = dname + "/" + b_path.basename + ".snirf"
-        write_raw_snirf(raw, snirf_path)
-        raw = mne.io.read_raw_snirf(snirf_path, preload=False)
-        if args.events:
-            events, event_id = mne.events_from_annotations(raw, event_codes)
-            raw.set_annotations(
-                mne.annotations_from_events(events, raw.info['sfreq'],
-                                            event_desc=trial_type))
-        raw.annotations.duration = np.ones(raw.annotations.duration.shape) *\
-                                   args.duration
-        raw.info['line_freq'] = 50
-        bids_path = BIDSPath(subject=id, task=task,
-                             datatype='nirs', root=f"{args.input_datasets}")
-        write_raw_bids(raw, bids_path, overwrite=True)
-        os.remove(snirf_path)
+        for ses in sess:
+            logger.info(f"Processing: sub-{sub}/ses-{ses}")
+
+            b_path = BIDSPath(subject=sub, task=task, session=ses,
+                              root=f"{args.input_datasets}/sourcedata",
+                              datatype="nirs", suffix="nirs",
+                              extension=".snirf")
+            dname = str(b_path.directory)
+            logger.debug(f"    Using sourcedata directory: {dname}")
+            fname = []
+            try:
+                fname = dname + "/" + next(os.walk(dname))[1][0]
+            except IndexError:
+                logger.info(f"    Unable to locate data file: {dname}")
+            except StopIteration:
+                logger.info(f"    Unable to locate data file: {dname}")
+            except StopIteration:
+                logger.warn(f"    Unknown error for file: {dname}")
+
+            if len(fname) > 0:
+                logger.debug(f"    Found sourcedata measurement: {fname}")
+                raw = mne.io.read_raw_nirx(fname, preload=False)
+                snirf_path = dname + "/" + b_path.basename + ".snirf"
+                logger.debug(f"    Writing SNIRF to: {snirf_path}")
+                write_raw_snirf(raw, snirf_path)
+
+                raw = mne.io.read_raw_snirf(snirf_path, preload=False)
+                if args.events:
+                    events, event_id = mne.events_from_annotations(raw, event_codes)
+                    raw.set_annotations(
+                        mne.annotations_from_events(events, raw.info['sfreq'],
+                                                    event_desc=trial_type))
+                raw.annotations.duration = np.ones(raw.annotations.duration.shape) *\
+                                           args.duration
+                raw.info['line_freq'] = 50
+                bids_path = BIDSPath(subject=sub, task=task, session=ses,
+                                     datatype='nirs', root=f"{args.input_datasets}")
+                write_raw_bids(raw, bids_path, overwrite=True)
+                os.remove(snirf_path)
 
 # print_dir_tree("/bids_dataset")
