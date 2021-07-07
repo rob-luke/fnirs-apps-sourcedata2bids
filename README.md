@@ -82,7 +82,7 @@ You can also view an [example source dataset that is ready for conversion here](
 |-------------------|----------|---------|--------------------------------------------------------|
 | subject-label     | optional | []      | Subjects to process. Default is to process all.        |
 | session-label     | optional | []      | Sessions to process. Default is to process all.        |
-| task-label        | required |         | Task name to use for data.                             |
+| task-label        | required | []      | Task name to use for data.                             |
 | events            | optional | []      | Specifes the naming of different event triggers.       |
 | duration          | optional | 1       | Duration of stimulus.                                  |
 
