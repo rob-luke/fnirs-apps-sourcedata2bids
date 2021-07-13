@@ -2,7 +2,7 @@
     "name": "fNIRS Apps: Sourcedata to BIDS",
     "description": "Create fNIRS BIDS datasets from source data",
     "author": "Robert Luke",
-    "tool-version": "v0.1.0",
+    "tool-version": "v0.2.0",
     "schema-version": "0.5",
     "command-line": "/run.py [InputDataset] [SubjectLabel] [SessionLabel] [TaskLabel] [Events] [Duration]",
     "container-image": {
@@ -97,5 +97,5 @@
     "custom": {
         "BIDSAppSpecVersion": "Draft"
     },
-    "doi": "10.5281/zenodo.5094740"
+    "doi": "10.5281/zenodo.5094750"
 }
