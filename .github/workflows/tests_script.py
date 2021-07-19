@@ -11,12 +11,12 @@ assert len(tasks) == 1
 
 for sub in subs:
     for task in tasks:
-        for ses in sess:
-            print(f"Processing: {task}-{sub}-{ses}")
-            b_path = BIDSPath(subject=sub, task=task, session=ses,
-                              root="/bids_dataset",
-                              datatype="nirs", suffix="nirs",
-                              extension=".snirf")
-            raw = read_raw_bids(b_path, verbose=True)
-            assert "fnirs_cw_amplitude" in raw
-            assert len(raw) > 10
+        ses = None
+        print(f"Processing: {task}-{sub}-{ses}")
+        b_path = BIDSPath(subject=sub, task=task, session=ses,
+                          root="/bids_dataset",
+                          datatype="nirs", suffix="nirs",
+                          extension=".snirf")
+        raw = read_raw_bids(b_path, verbose=True)
+        assert "fnirs_cw_amplitude" in raw
+        assert len(raw) > 10
