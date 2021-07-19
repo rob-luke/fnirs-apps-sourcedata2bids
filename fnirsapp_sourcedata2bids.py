@@ -13,7 +13,7 @@ import os.path as op
 import json
 import subprocess
 
-__version__ = "v0.2.2"
+__version__ = "v0.3.0"
 
 
 def fnirsapp_sourcedata2bids(command, env={}):
