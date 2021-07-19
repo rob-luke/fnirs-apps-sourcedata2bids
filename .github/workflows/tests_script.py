@@ -12,6 +12,7 @@ assert len(tasks) == 1
 for sub in subs:
     for task in tasks:
         for ses in sess:
+            print(f"Processing: {task}-{sub}-{ses}")
             b_path = BIDSPath(subject=sub, task=task, session=ses,
                               root="/bids_dataset",
                               datatype="nirs", suffix="nirs",
