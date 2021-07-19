@@ -1,5 +1,6 @@
 # fNIRS App: Sourcedata to BIDS
 
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/rob-luke/fnirs-apps-sourcedata2bids?color=green&label=version&sort=semver)
 [![build](https://github.com/rob-luke/fnirs-apps-sourcedata2bids/actions/workflows/ghregistry.yml/badge.svg)](https://github.com/rob-luke/fnirs-apps-sourcedata2bids/actions/workflows/ghregistry.yml)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4999340.svg)](https://doi.org/10.5281/zenodo.4999340)
 
