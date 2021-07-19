@@ -4,8 +4,6 @@
         "01",
         "02"
     ],
-    "task_label": [
-        "tapping"
-    ],
+    "task_label": "tapping",
     "duration": 5
 }
