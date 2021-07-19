@@ -32,11 +32,6 @@ jobs:
       - name: Run docker image
         run: docker-compose up
 
-      - uses: actions/upload-artifact@v1
-        with:
-          name: Formatted_BIDS_Dataset
-          path: /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data
-
       - name: Build docker image
         run: docker build --progress=plain -t test .
           
@@ -53,8 +48,13 @@ jobs:
         run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset test --task-label test --duration 3  --subject-label 02
 
       - name: Run test with custom events
-        run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset test --task-label test --events "{\"1\":\"Control\", \"2\":\"Tapping/Left\", \"3\":\"Tapping/Right\"}"
+        run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset test --task-label tapping --events "{\"1\":\"Control\", \"2\":\"Tapping/Left\", \"3\":\"Tapping/Right\"}" --duration 5
 
       - name: Ensure generated dataset was valid
         run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset -v /home/runner/work/fnirs-apps-sourcedata2bids/fnirs-apps-sourcedata2bids/.github/workflows/tests_script.py:/script.py ghcr.io/rob-luke/mne-nirs/image python /script.py
 
+      - uses: actions/upload-artifact@v1
+        name: Upload formatted BIDS dataset
+        with:
+          name: Formatted_BIDS_Dataset
+          path: /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data
