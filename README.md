@@ -12,7 +12,7 @@ The app will then convert the raw data to a BIDS dataset, including conversion t
 
 #### Current limitations
 
-* Only works with NIRx files. However due to support in MNE, it will be trivial to extend to Hitachi, Imagent, Artinis datatypes too.
+* Only works with NIRx files. However due to support in MNE, it will be trivial to extend to Hitachi, Imagent, Artinis datatypes too. Raise an issue if you need this feature.
 
 **Feedback is welcome!!** Please let me know your experience with this app by raising an issue.  
 
