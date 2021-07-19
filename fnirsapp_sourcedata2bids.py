@@ -13,7 +13,7 @@ import os.path as op
 import json
 import subprocess
 
-__version__ = "v0.2.0"
+__version__ = "v0.2.1"
 
 
 def fnirsapp_sourcedata2bids(command, env={}):
@@ -124,7 +124,7 @@ if args.events:
     event_codes = dict()
     for event in _events:
         trial_type[int(event)] = _events[event]
-        event_codes[str(float(event))] = int(event)
+        event_codes[str(int(event))] = int(event)
     logger.info(f"        Events: {trial_type}")
     logger.info(f"        Codes:  {event_codes}")
 else:
