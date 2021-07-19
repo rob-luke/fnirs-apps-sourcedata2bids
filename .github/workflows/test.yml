@@ -36,16 +36,16 @@ jobs:
         run: docker build --progress=plain -t test .
           
       - name: Run test with minimal arguments
-        run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset test --task-label test
+        run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset test --task-label tapping
         
       - name: Run test with single subject
-        run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset test --task-label test --subject-label 03
+        run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset test --task-label tapping --subject-label 03
         
       - name: Run test with manual duration
-        run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset test --task-label test --duration 3
+        run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset test --task-label tapping --duration 3
         
       - name: Run test with multiple arguments
-        run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset test --task-label test --duration 3  --subject-label 02
+        run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset test --task-label tapping --duration 3  --subject-label 02
 
       - name: Run test with custom events
         run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset test --task-label tapping --events "{\"1\":\"Control\", \"2\":\"Tapping/Left\", \"3\":\"Tapping/Right\"}" --duration 5

@@ -7,4 +7,4 @@ print(f"Found sessions: {sess}")
 assert len(sess) == 0
 tasks = get_entity_vals("/bids_dataset", 'task')
 print(f"Found tasks: {tasks}")
-# assert len(tasks) == 1
+assert len(tasks) == 1
