@@ -5,15 +5,21 @@ import mne
 import mne_nirs
 import os
 import argparse
-from mne_bids import BIDSPath, write_raw_bids, print_dir_tree, get_entity_vals
+from mne_bids import BIDSPath, write_raw_bids, stats
 from mne_nirs.io.snirf import write_raw_snirf
 from mne.utils import logger
 from glob import glob
 import os.path as op
 import json
 import subprocess
+from pathlib import Path
+from datetime import datetime
+import json
+import hashlib
+from checksumdir import dirhash
+from pprint import pprint
 
-__version__ = "v0.3.1"
+__version__ = "v0.4.0"
 
 
 def fnirsapp_sourcedata2bids(command, env={}):
@@ -66,6 +72,20 @@ parser.add_argument('-v', '--version', action='version',
                     version='BIDS-App Scalp Coupling Index version '
                     f'{__version__}')
 args = parser.parse_args()
+
+
+def create_report(app_name=None, pargs=None):
+
+    exec_rep = dict()
+    exec_rep["ExecutionStart"] = datetime.now().isoformat()
+    exec_rep["ApplicationName"] = app_name
+    exec_rep["ApplicationVersion"] = __version__
+    exec_rep["Arguments"] = vars(pargs)
+
+    return exec_rep
+
+exec_files = dict()
+exec_rep = create_report(app_name="fNIRS-Apps: Sourcedata 2 BIDS", pargs=args)
 
 mne.set_log_level("INFO")
 logger.info("\n")
@@ -132,6 +152,48 @@ else:
 
 
 ########################################
+# Handle different inputs
+########################################
+
+def find_sourcedata(dir):
+    """
+    Return path to preferred datatype
+
+    Will return type in this preference order.
+    1. SNIRF fiesl
+    2. Directories
+
+    In the future more options should be added.
+    """
+
+    filenames_to_ignore = ['.DS_Store']
+    sourcedata_types = [".snirf"]
+    sourcedata_readers = [mne.io.read_raw_snirf]
+
+    all_data = os.listdir(dir.directory)
+    for bad in filenames_to_ignore:
+        if bad in all_data:
+            all_data.remove(bad)
+
+
+    for type, reader in zip(sourcedata_types, sourcedata_readers):
+        if any([a.endswith(type) for a in all_data]):
+            idx = np.where([a.endswith(type) for a in all_data])[0][0]
+            dpath = os.path.join(dir.directory, all_data[idx])
+            return dpath, reader, hashlib.md5(open(dpath, 'rb').read()).hexdigest()
+
+
+    if any([os.path.isdir(os.path.join(dir.directory, a)) for a in all_data]):
+        idx = np.where([os.path.isdir(os.path.join(dir.directory, a)) for a in all_data])[0][0]
+        dpath = os.path.join(dir.directory, all_data[idx])
+        return dpath, mne.io.read_raw_nirx, dirhash(dpath, 'md5')
+
+    logger.warn(f"Unknown error for file: {dir.directory}")
+
+    return 0, 0, 0
+
+
+########################################
 # Main script
 ########################################
 
@@ -140,42 +202,57 @@ for sub in subs:
     for task in tasks:
         for ses in sess:
             logger.info(f"Processing: sub-{sub}/ses-{ses}")
+            exec_files[f"sub-{sub}_ses-{ses}_task-{task}"] = dict()
 
             b_path = BIDSPath(subject=sub, task=task, session=ses,
                               root=f"{args.input_datasets}/sourcedata",
                               datatype="nirs", suffix="nirs",
                               extension=".snirf")
-            dname = str(b_path.directory)
-            logger.debug(f"    Using sourcedata directory: {dname}")
-            fname = []
-            try:
-                fname = dname + "/" + next(os.walk(dname))[1][0]
-            except IndexError:
-                logger.info(f"    Unable to locate data file: {dname}")
-            except StopIteration:
-                logger.info(f"    Unable to locate data file: {dname}")
-            except StopIteration:
-                logger.warn(f"    Unknown error for file: {dname}")
+            data_path, readfn, hash = find_sourcedata(b_path)
 
-            if len(fname) > 0:
-                logger.debug(f"    Found sourcedata measurement: {fname}")
-                raw = mne.io.read_raw_nirx(fname, preload=False)
-                snirf_path = dname + "/" + b_path.basename + ".snirf"
-                logger.debug(f"    Writing SNIRF to: {snirf_path}")
-                write_raw_snirf(raw, snirf_path)
+            logger.debug(f"    Using sourcedata: {data_path}")
+            exec_files[f"sub-{sub}_ses-{ses}_task-{task}"]["InputName"] = str(data_path)
+            exec_files[f"sub-{sub}_ses-{ses}_task-{task}"]["InputHash"] = hash
 
-                raw = mne.io.read_raw_snirf(snirf_path, preload=False)
-                if args.events:
+            raw = readfn(data_path, preload=False)
+
+            snirf_path = os.path.join(b_path.directory, b_path.basename)
+            logger.debug(f"    Writing SNIRF to: {snirf_path}")
+            write_raw_snirf(raw, snirf_path)
+
+            raw = mne.io.read_raw_snirf(snirf_path, preload=False)
+            if args.events:
+                try:
+                    # NIRx use floats as key values
                     events, event_id = mne.events_from_annotations(raw, event_codes)
-                    raw.set_annotations(
-                        mne.annotations_from_events(events, raw.info['sfreq'],
-                                                    event_desc=trial_type))
-                raw.annotations.duration = np.ones(raw.annotations.duration.shape) *\
-                                           args.duration
-                raw.info['line_freq'] = 50
-                bids_path = BIDSPath(subject=sub, task=task, session=ses,
-                                     datatype='nirs', root=f"{args.input_datasets}")
-                write_raw_bids(raw, bids_path, overwrite=True)
-                os.remove(snirf_path)
+                except ValueError:
+                    try:
+                        # SNIRF Files use integer values as keys
+                        int_ev_codes = {str(int(float(k))): event_codes[k] for k in event_codes.keys()}
+                        events, event_id = mne.events_from_annotations(raw, int_ev_codes)
+                    except ValueError:
+                        events, event_id = mne.events_from_annotations(raw)
+                raw.set_annotations(
+                    mne.annotations_from_events(events, raw.info['sfreq'],
+                                                event_desc=trial_type))
+            raw.annotations.duration = np.ones(raw.annotations.duration.shape) *\
+                                       args.duration
+            raw.info['line_freq'] = 50
+            bids_path = BIDSPath(subject=sub, task=task, session=ses,
+                                 datatype='nirs', root=f"{args.input_datasets}")
+            bids_path = write_raw_bids(raw, bids_path, overwrite=True)
+            os.remove(snirf_path)
 
-# print_dir_tree("/bids_dataset")
+            exec_files[f"sub-{sub}_ses-{ses}_task-{task}"]["OutputFileHash"] = \
+                hashlib.md5(open(bids_path.fpath, 'rb').read()).hexdigest()
+
+
+exec_rep["Files"] = exec_files
+exec_path = f"{args.input_datasets}/execution"
+exec_rep["ExecutionEnd"] = datetime.now().isoformat()
+pprint(exec_rep)
+Path(exec_path).mkdir(parents=True, exist_ok=True)
+with open(f"{exec_path}/{exec_rep['ExecutionStart'].replace(':', '-')}.json", "w") as fp:
+    json.dump(exec_rep, fp)
+
+pprint(stats.count_events(args.input_datasets))

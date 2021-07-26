@@ -7,6 +7,7 @@ RUN pip install https://github.com/nilearn/nilearn/archive/main.zip
 RUN pip install https://github.com/mne-tools/mne-nirs/archive/main.zip
 RUN pip install h5py
 RUN pip install seaborn
+RUN pip install checksumdir
 
 COPY fnirsapp_sourcedata2bids.py /run.py
 RUN chmod +x /run.py
