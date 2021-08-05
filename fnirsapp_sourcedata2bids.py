@@ -252,7 +252,7 @@ exec_path = f"{args.input_datasets}/execution"
 exec_rep["ExecutionEnd"] = datetime.now().isoformat()
 pprint(exec_rep)
 Path(exec_path).mkdir(parents=True, exist_ok=True)
-with open(f"{exec_path}/{exec_rep['ExecutionStart'].replace(':', '-')}.json", "w") as fp:
+with open(f"{exec_path}/{exec_rep['ExecutionStart'].replace(':', '-')}-sourcedata2bids.json", "w") as fp:
     json.dump(exec_rep, fp)
 
 pprint(stats.count_events(args.input_datasets))
