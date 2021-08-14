@@ -89,6 +89,16 @@ You can also view an [example source dataset that is ready for conversion here](
 | optode_frame      | optional | ''      | Coordinate frame for the optode locations. See [here](https://mne.tools/dev/generated/mne.io.read_raw_snirf.html) for valid options.      |
 
 
+### Vendor Specific Notes
+
+#### NIRx Directory Data
+
+This should work as is. Do not specify an `optode_frame`
+
+#### NIRx SNIRF Data
+
+Specify `optode_frame mri` for correct loading of optode positions.
+
 ### Events
 
 To specify events you must pass in a dictionary specifying each code and associated name.
