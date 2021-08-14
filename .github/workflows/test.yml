@@ -11,12 +11,20 @@ jobs:
         with:
           fetch-depth: 0
           
-      - name: Download test data
+      - name: Download test NIRX data
         shell: bash -el {0}
         run: |
           curl -L https://github.com/rob-luke/BIDS-NIRS-Tapping/archive/00-Raw-data.zip --output data.zip
           pwd
           unzip data.zip -d ~/example_data
+          ls
+
+      - name: Download test NIRX SNIRF data
+        shell: bash -el {0}
+        run: |
+          curl -L https://github.com/rob-luke/example-bids-sourcedata-snirf-nirx/archive/main.zip --output data_snirf.zip
+          pwd
+          unzip data_snirf.zip -d ~/example_data_nirx_snirf
           ls
 
       - name: Login to GitHub Container Registry
@@ -58,3 +66,9 @@ jobs:
         with:
           name: Formatted_BIDS_Dataset
           path: /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data
+
+      - name: NIRX SNIRF data test
+        run: docker run -v /home/runner/example_data_nirx_snirf/example-bids-sourcedata-snirf-nirx-main/:/bids_dataset test --task-label snirftap
+
+      - name: NIRX SNIRF data test
+        run: docker run -v /home/runner/example_data_nirx_snirf/example-bids-sourcedata-snirf-nirx-main/:/bids_dataset test --task-label snirftap --optode-frame mri
