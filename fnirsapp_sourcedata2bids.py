@@ -156,7 +156,7 @@ else:
 
 reader_kwargs = dict()
 if args.optode_frame != '':
-    logger.info(f"    Using {args.optode_frame} optode frame.")
+    logger.info(f"Using {args.optode_frame} optode frame.")
     reader_kwargs["optode_frame"] = args.optode_frame
 
 

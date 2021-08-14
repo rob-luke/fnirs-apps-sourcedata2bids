@@ -70,5 +70,5 @@ jobs:
       - name: NIRX SNIRF data test
         run: docker run -v /home/runner/example_data_nirx_snirf/example-bids-sourcedata-snirf-nirx-main/:/bids_dataset test --task-label snirftap
 
-      - name: NIRX SNIRF data test
+      - name: NIRX SNIRF data test with optode frame
         run: docker run -v /home/runner/example_data_nirx_snirf/example-bids-sourcedata-snirf-nirx-main/:/bids_dataset test --task-label snirftap --optode-frame mri
