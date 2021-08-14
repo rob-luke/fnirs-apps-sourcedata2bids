@@ -19,7 +19,7 @@ import hashlib
 from checksumdir import dirhash
 from pprint import pprint
 
-__version__ = "v0.4.1"
+__version__ = "v0.4.2"
 
 
 def fnirsapp_sourcedata2bids(command, env={}):
@@ -46,6 +46,8 @@ parser.add_argument('--events', type=json.loads,
                     help='Event labels.')
 parser.add_argument('--duration', type=float, default=1.0,
                     help='Duration of stimulus.')
+parser.add_argument('--optode-frame', type=str, default="",
+                    help='Coordinate frame used for the optode positions.')
 parser.add_argument('--subject-label',
                     help='The label(s) of the participant(s) that should be '
                     'analyzed. The label corresponds to '
@@ -86,6 +88,7 @@ def create_report(app_name=None, pargs=None):
 
 exec_files = dict()
 exec_rep = create_report(app_name="fNIRS-Apps: Sourcedata 2 BIDS", pargs=args)
+pprint(exec_rep)
 
 mne.set_log_level("INFO")
 logger.info("\n")
@@ -151,16 +154,22 @@ else:
     logger.info("    No event data provided, using default coding.")
 
 
+reader_kwargs = dict()
+if args.optode_frame != '':
+    logger.info(f"Using {args.optode_frame} optode frame.")
+    reader_kwargs["optode_frame"] = args.optode_frame
+
+
 ########################################
 # Handle different inputs
 ########################################
 
 def find_sourcedata(dir):
     """
-    Return path to preferred datatype
+    Return path to preferred datatype, reader function, and hash of data.
 
     Will return type in this preference order.
-    1. SNIRF fiesl
+    1. SNIRF files
     2. Directories
 
     In the future more options should be added.
@@ -175,13 +184,11 @@ def find_sourcedata(dir):
         if bad in all_data:
             all_data.remove(bad)
 
-
     for type, reader in zip(sourcedata_types, sourcedata_readers):
         if any([a.endswith(type) for a in all_data]):
             idx = np.where([a.endswith(type) for a in all_data])[0][0]
             dpath = os.path.join(dir.directory, all_data[idx])
             return dpath, reader, hashlib.md5(open(dpath, 'rb').read()).hexdigest()
-
 
     if any([os.path.isdir(os.path.join(dir.directory, a)) for a in all_data]):
         idx = np.where([os.path.isdir(os.path.join(dir.directory, a)) for a in all_data])[0][0]
@@ -201,26 +208,36 @@ print(" ")
 for sub in subs:
     for task in tasks:
         for ses in sess:
+
+            # Present information
             logger.info(f"Processing: sub-{sub}/ses-{ses}")
             exec_files[f"sub-{sub}_ses-{ses}_task-{task}"] = dict()
 
+            # Locate files
             b_path = BIDSPath(subject=sub, task=task, session=ses,
                               root=f"{args.input_datasets}/sourcedata",
                               datatype="nirs", suffix="nirs",
                               extension=".snirf")
+            # Determine the data type of file and appropriate reader
             data_path, readfn, hash = find_sourcedata(b_path)
 
+            # Present information
             logger.debug(f"    Using sourcedata: {data_path}")
             exec_files[f"sub-{sub}_ses-{ses}_task-{task}"]["InputName"] = str(data_path)
             exec_files[f"sub-{sub}_ses-{ses}_task-{task}"]["InputHash"] = hash
 
-            raw = readfn(data_path, preload=False)
+            # Read data
+            raw = readfn(data_path, preload=False, **reader_kwargs)
 
+            # Rewrite as SNIRF
             snirf_path = os.path.join(b_path.directory, b_path.basename)
             logger.debug(f"    Writing SNIRF to: {snirf_path}")
             write_raw_snirf(raw, snirf_path)
 
+            # Reread SNIRF
             raw = mne.io.read_raw_snirf(snirf_path, preload=False)
+
+            # Handle renaming and duration of events
             if args.events:
                 try:
                     # NIRx use floats as key values
@@ -237,7 +254,11 @@ for sub in subs:
                                                 event_desc=trial_type))
             raw.annotations.duration = np.ones(raw.annotations.duration.shape) *\
                                        args.duration
+
+            # Add additional info
             raw.info['line_freq'] = 50
+
+            # Final write as BIDS format
             bids_path = BIDSPath(subject=sub, task=task, session=ses,
                                  datatype='nirs', root=f"{args.input_datasets}")
             bids_path = write_raw_bids(raw, bids_path, overwrite=True)

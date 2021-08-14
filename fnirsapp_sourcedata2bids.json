@@ -2,11 +2,11 @@
     "name": "fNIRS Apps: Sourcedata to BIDS",
     "description": "Create fNIRS BIDS datasets from source data",
     "author": "Robert Luke",
-    "tool-version": "v0.4.1",
+    "tool-version": "v0.4.2",
     "schema-version": "0.5",
-    "command-line": "/run.py [InputDataset] [SubjectLabel] [SessionLabel] [TaskLabel] [Events] [Duration]",
+    "command-line": "/run.py [InputDataset] [SubjectLabel] [SessionLabel] [TaskLabel] [Events] [Duration] [OptodeFrame]",
     "container-image": {
-        "image": "ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app:v0.4.1",
+        "image": "ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app:v0.4.2",
         "index": "ghcr.io",
         "type": "docker",
         "entrypoint": true
@@ -66,6 +66,14 @@
             "optional": true,
             "type": "Number",
             "value-key": "[Duration]"
+        },
+        {
+            "command-line-flag": "--optode-frame",
+            "id": "optode_frame",
+            "name": "optode_frame",
+            "optional": true,
+            "type": "String",
+            "value-key": "[OptodeFrame]"
         }
     ],
     "output-files": [
