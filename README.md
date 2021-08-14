@@ -86,6 +86,7 @@ You can also view an [example source dataset that is ready for conversion here](
 | task-label        | required | []      | Task name to use for data.                             |
 | events            | optional | []      | Specifes the naming of different event triggers.       |
 | duration          | optional | 1       | Duration of stimulus.                                  |
+| optode_frame      | optional | ''      | Coordinate frame for the optode locations. See [here](https://mne.tools/dev/generated/mne.io.read_raw_snirf.html) for valid options.      |
 
 
 ### Events
@@ -99,6 +100,11 @@ would be.
 --events "{\"1\":\"Control\", \"2\":\"Tapping/Left\", \"3\":\"Tapping/Right\"}"
 ```
 
+## Examples
+
+* See a detailed example of how to use this app with NIRx data at http://fnirs-apps.org/tutorial/
+* See example of NIRx data being processed at [here](https://github.com/rob-luke/fnirs-apps-sourcedata2bids/blob/bc58645352ed18a5db4fce0320ccec460a3d7b46/.github/workflows/test.yml#L59)
+* See example of NIRx SNIRF files being processed [here](https://github.com/rob-luke/fnirs-apps-demo/blob/9f00532ca41c3ed8ddff1624648081c367661aa7/.github/workflows/nirx_snirf_tapping.yml#L43) 
 
 ## Updating and running specific versions
 
