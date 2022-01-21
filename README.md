@@ -7,7 +7,7 @@
 
 This [*fNIRS App*](http://fnirs-apps.org) will convert a directory of fNIRS files to a correctly fomatted BIDS dataset.
 
-To use this app the original measurement files (source data) must be organised according to the file structure specified below.
+The original measurement files (source data) must be organised according to the file structure specified below.
 The app will then convert the raw data to a BIDS dataset, including conversion to SNIRF and creation of all metadata files.
 
 #### Current limitations
