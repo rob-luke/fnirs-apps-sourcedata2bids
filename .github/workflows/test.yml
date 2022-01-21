@@ -59,7 +59,7 @@ jobs:
         run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset test --task-label tapping --events "{\"1\":\"Control\", \"2\":\"Tapping/Left\", \"3\":\"Tapping/Right\"}" --duration 5
 
       - name: Ensure generated dataset was valid
-        run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset -v /home/runner/work/fnirs-apps-sourcedata2bids/fnirs-apps-sourcedata2bids/.github/workflows/tests_script.py:/script.py ghcr.io/rob-luke/mne-nirs/image python /script.py
+        run: docker run -v /home/runner/example_data/BIDS-NIRS-Tapping-00-Raw-data/:/bids_dataset -v /home/runner/work/fnirs-apps-sourcedata2bids/fnirs-apps-sourcedata2bids/.github/workflows/tests_script.py:/script.py ghcr.io/mne-tools/mne-nirs:main python /script.py
 
       - uses: actions/upload-artifact@v1
         name: Upload formatted BIDS dataset
