@@ -2,11 +2,11 @@
     "name": "fNIRS Apps: Sourcedata to BIDS",
     "description": "Create fNIRS BIDS datasets from source data",
     "author": "Robert Luke",
-    "tool-version": "v0.4.2",
+    "tool-version": "v0.4.3",
     "schema-version": "0.5",
     "command-line": "/run.py [InputDataset] [SubjectLabel] [SessionLabel] [TaskLabel] [Events] [Duration] [OptodeFrame]",
     "container-image": {
-        "image": "ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app:v0.4.2",
+        "image": "ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/app:v0.4.3",
         "index": "ghcr.io",
         "type": "docker",
         "entrypoint": true
