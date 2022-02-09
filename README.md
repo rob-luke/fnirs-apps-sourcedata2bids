@@ -136,7 +136,13 @@ docker run -v /path/:/bids_dataset ghcr.io/rob-luke/fnirs-apps-sourcedata2bids/a
 
 This app is [boutiques compatible](https://boutiques.github.io).
 In addition to the methods described above, this app can also be run using [boutiques bosh command](https://boutiques.github.io/doc/index.html).
-You can see an example usage of this app with boutiques at https://github.com/rob-luke/fnirs-apps-demo.
+You can read the bosh tutorial at http://fnirs-apps.org/advanced/ and
+you can see an example usage of this app with boutiques at https://github.com/rob-luke/fnirs-apps-demo.
+In short, once you have a configuration file (`convert-to-bids.json`) you can run:
+
+```bash
+bosh exec launch zenodo.5885755 code/convert-to-bids.json -v `pwd`:/bids_dataset
+```
 
 
 Acknowledgements
