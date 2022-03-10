@@ -79,14 +79,14 @@ You can also view an [example source dataset that is ready for conversion here](
 
 ## Arguments
 
-|                   | Required | Default | Note                                                   |
-|-------------------|----------|---------|--------------------------------------------------------|
-| subject-label     | optional | []      | Subjects to process. Default is to process all.        |
-| session-label     | optional | []      | Sessions to process. Default is to process all.        |
-| task-label        | required | []      | Task name to use for data.                             |
-| events            | optional | []      | Specifes the naming of different event triggers.       |
-| duration          | optional | 1       | Duration of stimulus.                                  |
-| optode_frame      | optional | ''      | Coordinate frame for the optode locations. See [here](https://mne.tools/dev/generated/mne.io.read_raw_snirf.html) for valid options.      |
+|                   | Required | Default | Note                                                                                                                                 |
+|-------------------|----------|---------|--------------------------------------------------------------------------------------------------------------------------------------|
+| subject-label     | optional | []      | Subjects to process. Default is to process all.                                                                                      |
+| session-label     | optional | []      | Sessions to process. Default is to process all.                                                                                      |
+| task-label        | required | []      | Task name to use for data.                                                                                                           |
+| events            | optional | []      | Specifes the naming of different event triggers.                                                                                     |
+| duration          | optional | 1       | Duration of stimulus.                                                                                                                |
+| optode_frame      | optional | ''      | Coordinate frame for the optode locations. See [here](https://mne.tools/dev/generated/mne.io.read_raw_snirf.html) for valid options. |
 
 
 ### Vendor Specific Notes
