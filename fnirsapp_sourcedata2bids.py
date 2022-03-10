@@ -19,7 +19,7 @@ import hashlib
 from checksumdir import dirhash
 from pprint import pprint
 
-__version__ = "v0.4.3"
+__version__ = "v0.4.4"
 
 
 def fnirsapp_sourcedata2bids(command, env={}):
